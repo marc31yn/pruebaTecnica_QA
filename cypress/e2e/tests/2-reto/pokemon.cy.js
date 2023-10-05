@@ -4,118 +4,127 @@
 // -- URLs 
 const pokemon_url = 'https://dex.pokemonshowdown.com/';
 
+// constants 
+const pokemonsData = require('../../../fixtures/pokemon.json');
+
 // ***********************************************
 // Test suit
 describe('Buscar Pokemon, verificar stats y habilidades', () => {
+
     beforeEach(() => {
         // Ir al sitio web
         cy.visit(pokemon_url)
     })
 
-    it('Busqueda de un Pokémon', () => {
+    pokemonsData.forEach(pokemonTest => {
 
-        // Verificar que la URL sea la correcta
-        cy.url().should('eq', pokemon_url);
+        it('Buscar pokemon ' + pokemonTest.pokemon_name, () => {
 
-        //Datos de prueba
-        const pokemon_name = 'Mr. Mime';
+            // Verificar que la URL sea la correcta
+            cy.url().should('eq', pokemon_url);
 
-        // Buscar pokemon
-        cy.get('button:contains("Pokémon")').click();
-        cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
-        cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
+            //Datos de prueba
+            const pokemon_name = pokemonTest.pokemon_name;
 
-        // Validar el nombre del pokemon es el mismo de la busqueda
-        cy.get(`a.subtle:contains(${pokemon_name})`).should('have.text', pokemon_name);
+            // Buscar pokemon
+            cy.get('button:contains("Pokémon")').click();
+            cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
+            cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
 
-    });
-
-    it('Validación de Stats Base en Web vs API', () => {
-
-        // Verificar que la URL sea la correcta
-        cy.url().should('eq', pokemon_url);
-
-        //Datos de prueba
-        const pokemon_name = 'Charizard';
-
-        // Buscar pokemon
-        cy.get('button:contains("Pokémon")').click();
-        cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
-        cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
+            // Validar el nombre del pokemon es el mismo de la busqueda
+            cy.get(`a.subtle:contains(${pokemon_name})`).should('have.text', pokemon_name);
 
 
-        // Realiza la peticion a la API de pokemon
-        const pokemon_name_lowercase = pokemon_name.toLowerCase();
-        cy.request('GET', `https://pokeapi.co/api/v2/pokemon/${pokemon_name_lowercase}`)
-            .then((response) => {
-                expect(response.status).to.equal(200);
-                const pokemonStats = response.body.stats;
+        });
 
-                // Itera sobre cada stat y verifica el base_stat y el stat name
-                pokemonStats.forEach((stat) => {
-                    const statName = stat.stat.name;
-                    const baseStat = stat.base_stat;
+        it('Validación de Stats Base en Web vs API de ' + pokemonTest.pokemon_name, () => {
 
-                    // Busca el contenedor de stats
-                    cy.get('.stats > tbody').within(() => {
-                        // Verifica que el nombre y el valor del stat coincidan
-                        switch (statName) {
-                            case "special-attack":
-                                cy.get('th').contains('Sp. Atk').next('td').should('have.text', `${baseStat}`);
-                                break;
-                            case "special-defense":
-                                cy.get('th').contains('Sp. Def').next('td').should('have.text', `${baseStat}`);
-                                break;
-                            default:
-                                cy.get('th').contains(statName, { matchCase: false }).next('td').should('have.text', `${baseStat}`);
-                                break;
-                        }
+            // Verificar que la URL sea la correcta
+            cy.url().should('eq', pokemon_url);
+
+            //Datos de prueba
+            const pokemon_name = pokemonTest.pokemon_name;
+
+            // Buscar pokemon
+            cy.get('button:contains("Pokémon")').click();
+            cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
+            cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
+
+
+            // Realiza la peticion a la API de pokemon
+            const pokemon_name_lowercase = pokemon_name.toLowerCase();
+            cy.request('GET', `https://pokeapi.co/api/v2/pokemon/${pokemon_name_lowercase}`)
+                .then((response) => {
+                    expect(response.status).to.equal(200);
+                    const pokemonStats = response.body.stats;
+
+                    // Itera sobre cada stat y verifica el base_stat y el stat name
+                    pokemonStats.forEach((stat) => {
+                        const statName = stat.stat.name;
+                        const baseStat = stat.base_stat;
+
+                        // Busca el contenedor de stats
+                        cy.get('.stats > tbody').within(() => {
+                            // Verifica que el nombre y el valor del stat coincidan
+                            switch (statName) {
+                                case "special-attack":
+                                    cy.get('th').contains('Sp. Atk').next('td').should('have.text', `${baseStat}`);
+                                    break;
+                                case "special-defense":
+                                    cy.get('th').contains('Sp. Def').next('td').should('have.text', `${baseStat}`);
+                                    break;
+                                default:
+                                    cy.get('th').contains(statName, { matchCase: false }).next('td').should('have.text', `${baseStat}`);
+                                    break;
+                            }
+
+                        });
+
 
                     });
 
 
                 });
 
+        });
 
-            });
+        it('Validación de Habilidades en Web vs API de ' + pokemonTest.pokemon_name, () => {
 
-    });
+            // Verificar que la URL sea la correcta
+            cy.url().should('eq', pokemon_url);
 
-    it('Validación de Habilidades en Web vs API', () => {
+            //Datos de prueba
+            const pokemon_name = pokemonTest.pokemon_name;
 
-        // Verificar que la URL sea la correcta
-        cy.url().should('eq', pokemon_url);
-
-        //Datos de prueba
-        const pokemon_name = 'Pikachu';
-
-        // Buscar pokemon
-        cy.get('button:contains("Pokémon")').click();
-        cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
-        cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
+            // Buscar pokemon
+            cy.get('button:contains("Pokémon")').click();
+            cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
+            cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
 
 
-        // Realiza la peticion a la API de pokemon
-        const pokemon_name_lowercase = pokemon_name.toLowerCase();
-        cy.request('GET', `https://pokeapi.co/api/v2/pokemon/${pokemon_name_lowercase}`)
-            .then((response) => {
-                expect(response.status).to.equal(200);
-                const abilities = response.body.abilities;
+            // Realiza la peticion a la API de pokemon
+            const pokemon_name_lowercase = pokemon_name.toLowerCase();
+            cy.request('GET', `https://pokeapi.co/api/v2/pokemon/${pokemon_name_lowercase}`)
+                .then((response) => {
+                    expect(response.status).to.equal(200);
+                    const abilities = response.body.abilities;
 
-                // Itera sobre cada habilidad
-                abilities.forEach((abilityInfo) => {
-                    const abilityName = abilityInfo.ability.name;
+                    // Itera sobre cada habilidad
+                    abilities.forEach((abilityInfo) => {
+                        const abilityName = abilityInfo.ability.name;
 
-                    // Convierte todo el texto en minúsculas y separa las palabras por guiones bajos
-                    const words = abilityName.toLowerCase().split('-');
-                    // Capitaliza la primera letra de cada palabra
-                    const formattedAbilityName = words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                        // Convierte todo el texto en minúsculas y separa las palabras por guiones bajos
+                        const words = abilityName.toLowerCase().split('-');
+                        // Capitaliza la primera letra de cada palabra
+                        const formattedAbilityName = words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-                    // Verifica el dato de habilidad obtenido con la API contra lo que se muestra en la web
-                    cy.get('.abilityentry > .imgentry').contains(formattedAbilityName).should('have.text', `${formattedAbilityName}`);
+                        // Verifica el dato de habilidad obtenido con la API contra lo que se muestra en la web
+                        cy.get('.abilityentry > .imgentry').contains(formattedAbilityName).should('have.text', `${formattedAbilityName}`);
+                    });
+
                 });
 
-            });
+        });
 
     });
 
