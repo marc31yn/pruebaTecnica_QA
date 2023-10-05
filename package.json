@@ -1,0 +1,30 @@
+{
+  "name": "test_banco_cuscatlan",
+  "version": "1.0.0",
+  "description": "Resolucion de prueba tecnica para el puesto de QA Automation del Banco Cuscatlan",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open"
+  },
+  "keywords": [
+    "e2e",
+    "automation",
+    "framework",
+    "cypress",
+    "prueba_tecnica",
+    "test_banco_cuscatlan"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marc31yn/pruebaTecnica_QA.git"
+  },
+  "author": "Marcela Lopez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marc31yn/pruebaTecnica_QA/issues"
+  },
+  "homepage": "https://github.com/marc31yn/pruebaTecnica_QA#readme",
+  "devDependencies": {
+    "cypress": "^13.3.0"
+  }
+}
