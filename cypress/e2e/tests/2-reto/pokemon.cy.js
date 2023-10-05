@@ -12,7 +12,7 @@ describe('Verificar busqueda de Pokemon vs API', () => {
         cy.visit(pokemon_url)
     })
 
-    it('Búsqueda de un Pokémon', () => {
+    it('Busqueda de un Pokémon', () => {
 
         // Verificar que la URL sea la correcta
         cy.url().should('eq', pokemon_url);
@@ -36,7 +36,7 @@ describe('Verificar busqueda de Pokemon vs API', () => {
         cy.url().should('eq', pokemon_url);
 
         //Datos de prueba
-        const pokemon_name = 'Pikachu';
+        const pokemon_name = 'Charizard';
 
         // Buscar pokemon
         cy.get('button:contains("Pokémon")').click();
@@ -78,6 +78,62 @@ describe('Verificar busqueda de Pokemon vs API', () => {
 
 
             });
+
+    });
+
+    it('Validación de Habilidades', () => {
+
+        // Verificar que la URL sea la correcta
+        cy.url().should('eq', pokemon_url);
+
+        //Datos de prueba
+        const pokemon_name = 'Pikachu';
+
+        // Buscar pokemon
+        cy.get('button:contains("Pokémon")').click();
+        cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
+        cy.get('.pokemonnamecol > b').contains(pokemon_name).click();
+
+
+        // Realiza la peticion a la API de pokemon
+        const pokemon_name_lowercase = pokemon_name.toLowerCase();
+        cy.request('GET', `https://pokeapi.co/api/v2/pokemon/${pokemon_name_lowercase}`)
+            .then((response) => {
+                expect(response.status).to.equal(200);
+                const abilities = response.body.abilities;
+
+                // Itera sobre cada habilidad
+                abilities.forEach((abilityInfo) => {
+                    const abilityName = abilityInfo.ability.name;
+
+                    // Convierte todo el texto en minúsculas y separa las palabras por guiones bajos
+                    const words = abilityName.toLowerCase().split('-');
+                    // Capitaliza la primera letra de cada palabra
+                    const formattedAbilityName = words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+                    // Verifica el dato de habilidad obtenido con la API contra lo que se muestra en la web
+                    cy.get('.abilityentry > .imgentry').contains(formattedAbilityName).should('have.text', `${formattedAbilityName}`);
+                });
+
+            });
+
+    });
+
+    it('Busqueda de un Pokémon Inexistente', () => {
+
+        // Verificar que la URL sea la correcta
+        cy.url().should('eq', pokemon_url);
+
+        //Datos de prueba
+        const pokemon_name = 'nonsense';
+        const invalid_pokemon_msg = "No exact match found. The closest matches alphabetically are";
+
+        // Buscar pokemon
+        cy.get('button:contains("Pokémon")').click();
+        cy.get('div[class="searchboxwrapper"] > input').type(pokemon_name);
+
+        //Verificar que el mensaje que no se encontro resultado se muestre
+        cy.get('.results > ul > .result').contains(invalid_pokemon_msg).should('be.visible');;
 
     });
 
