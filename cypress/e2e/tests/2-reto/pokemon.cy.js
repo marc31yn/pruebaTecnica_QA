@@ -6,7 +6,7 @@ const pokemon_url = 'https://dex.pokemonshowdown.com/';
 
 // ***********************************************
 // Test suit
-describe('Verificar busqueda de Pokemon vs API', () => {
+describe('Buscar Pokemon, verificar stats y habilidades', () => {
     beforeEach(() => {
         // Ir al sitio web
         cy.visit(pokemon_url)
@@ -30,7 +30,7 @@ describe('Verificar busqueda de Pokemon vs API', () => {
 
     });
 
-    it('Validación de Stats Base', () => {
+    it('Validación de Stats Base en Web vs API', () => {
 
         // Verificar que la URL sea la correcta
         cy.url().should('eq', pokemon_url);
@@ -81,7 +81,7 @@ describe('Verificar busqueda de Pokemon vs API', () => {
 
     });
 
-    it('Validación de Habilidades', () => {
+    it('Validación de Habilidades en Web vs API', () => {
 
         // Verificar que la URL sea la correcta
         cy.url().should('eq', pokemon_url);

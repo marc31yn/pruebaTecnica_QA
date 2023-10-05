@@ -5,11 +5,14 @@
   "main": "index.js",
   "scripts": {
     "cy:open": "cypress open",
-    "cy:chrome": "cypress run --browser chrome",
-    "cy:edge": "cypress run --browser edge",
+    "cy:chrome": "cypress run --headed --browser chrome",
+    "cy:edge": "cypress run --headed --browser edge",
 
     "cy:reto1:chrome": "cypress run --headed --browser chrome --spec cypress/e2e/tests/1-reto",
-    "cy:reto1:edge": "cypress run --headed --browser edge --spec cypress/e2e/tests/1-reto"
+    "cy:reto1:edge": "cypress run --headed --browser edge --spec cypress/e2e/tests/1-reto",
+
+    "cy:reto2:chrome": "cypress run --headed --browser chrome --spec cypress/e2e/tests/2-reto",
+    "cy:reto2:edge": "cypress run --headed --browser edge --spec cypress/e2e/tests/2-reto"
   },
   "keywords": [
     "e2e",
