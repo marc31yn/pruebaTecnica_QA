@@ -237,7 +237,7 @@ describe('Pruebas de Cálculo de Cuota Hipotecaria', () => {
 
   });
 
-  it('Verificar calculo de cuota hipotecaria utilizando pago inicial en montón', () => {
+  it('Verificar calculo de cuota hipotecaria utilizando pago inicial en monto', () => {
     // Verificar que la URL sea la correcta
     cy.url().should('eq', calculadora_url);
 
